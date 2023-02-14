@@ -21,6 +21,10 @@ instance = dht11.DHT11(pin = 24)
 maxtemp = 0
 mintemp = 50
 while True:
+    getHex = db.child("hex").get()
+    h = getHex.val().lstrip('#')
+    converted = tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+    pixels.fill(converted)
     result = instance.read()
     if result.humidity >= 80  and result.humidity!=0:
         response0 = {
@@ -53,9 +57,6 @@ while True:
     if result.temperature!=0 and result.humidity!=0:
         db.update(data)
         time.sleep(3)
-    getHex = db.child("hex").get()
-    h = getHex.val().lstrip('#')
-    converted = tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
-    pixels.fill(converted)
+ 
     
     
